@@ -1,0 +1,2 @@
+Avant tout docker compose, rendre exécutable le fichier init-mongo : 
+   chmod +x init-mongo.sh

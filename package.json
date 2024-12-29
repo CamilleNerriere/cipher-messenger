@@ -12,12 +12,15 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "mongoose": "^8.9.2",
     "nodemon": "^3.1.9",
     "winston": "^3.17.0",
-    "ws": "^8.18.0"
+    "ws": "^8.18.0",
+    "wscat": "^6.0.1"
   },
   "devDependencies": {
     "chai": "^5.1.2",

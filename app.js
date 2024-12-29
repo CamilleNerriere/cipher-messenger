@@ -4,15 +4,19 @@ import { WebSocketServer, WebSocket } from "ws";
 import jwt from "jsonwebtoken";
 import logger from "./logger.js";
 import dotenv from "dotenv";
+import connectDB from "./data/db.js";
+import User from "./models/User.js";
+import bcrypt from "bcrypt";
 
 dotenv.config();
+connectDB();
 
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocketServer({
   server,
   handleProtocols: (protocols) => {
-    return protocols ? protocols[O] : null;
+    return protocols ? protocols[0] : null;
   },
 });
 
@@ -45,6 +49,7 @@ app.post("/api/login", (req, res) => {
       expiresIn: "1h",
     }
   );
+  console.log("Generated Token:", token);
   res.json({ token });
 });
 
@@ -56,6 +61,7 @@ wss.on("connection", (ws, req) => {
   // Verify Token
 
   const token = req.headers["sec-websocket-protocol"];
+  logger.info(`Received token: ${token}`);
 
   if (!token) {
     logger.warn("Connection attempt without token");
@@ -199,9 +205,5 @@ wss.on("connection", (ws, req) => {
     });
   });
 });
-
-// server.listen(process.env.PORT, () => {
-//   logger.info(`Server is running on port ${process.env.PORT}`);
-// });
 
 export default server;
