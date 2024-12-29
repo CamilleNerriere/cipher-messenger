@@ -5,17 +5,16 @@ services:
     build: .
     ports:
       - "3000:3000"
-    environment:
-      - MONGO_URI=${MONGO_URI}
-      - NODE_ENV=${NODE_ENV}
+    # environment:
+      # - MONGO_URI=${MONGO_URI}
     volumes:
       - ./:/usr/src/app
       - /usr/src/app/node_modules
     depends_on:
-      mongo:
+      mongodb:
         condition: service_healthy
 
-  mongo:
+  mongodb:
     image: mongo:6-jammy
     ports:
       - "27017:27017"
@@ -23,7 +22,7 @@ services:
       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
       - mongo-data:/data/db
     environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_PASSWORD}
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
     healthcheck:
       test: ["CMD", "echo", "ping"]

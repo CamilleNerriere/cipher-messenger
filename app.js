@@ -6,9 +6,9 @@ import logger from "./logger.js";
 import dotenv from "dotenv";
 import connectDB from "./data/db.js";
 import User from "./models/User.js";
-import bcrypt from "bcrypt";
 
 dotenv.config();
+
 connectDB();
 
 const app = express();
@@ -22,35 +22,84 @@ const wss = new WebSocketServer({
 
 app.use(express.json());
 
-// Simulation de BDD
+// GET all User
 
-const usersDB = [
-  { id: "1", username: "user1", password: "password1" },
-  { id: "2", username: "user2", password: "password2" },
-];
+app.get("/users", async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    logger.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// POST Register
+
+app.post("/users", async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+    const newUser = new User({ username, email, password });
+    await newUser.save();
+    res.status(201).json(newUser);
+  } catch (error) {
+    logger.error(error);
+    res.status(400).json({ message: error.message });
+  }
+});
 
 // POST login route
 
-app.post("/api/login", (req, res) => {
-  const { username, password } = req.body;
-  const user = usersDB.find(
-    (u) => u.username === username && u.password === password
-  );
-  if (!user) {
-    return res
-      .status(401)
-      .json({ error: "Nom d'utilisateur ou mot de passe invalide" });
-  }
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
 
-  const token = jwt.sign(
-    { id: user.id, username: user.username },
-    process.env.JWT_SECRET,
-    {
-      expiresIn: "1h",
+    if (!user) {
+      return res.status(401).json({ message: "Invalid email or password" });
     }
-  );
-  console.log("Generated Token:", token);
-  res.json({ token });
+
+    const isMatch = await user.comparePassword(password);
+
+    if (!isMatch) {
+      return res.status(401).json({ message: "Invalid email or password" });
+    }
+
+    const token = jwt.sign(
+      { username: user.username, id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+    console.log("Generated Token:", token);
+    res.status(200).json({ token });
+  } catch (error) {
+    logger.error(error);
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/api/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    const user = await User.findOne({ email, password }).exec();
+
+    if (!user) {
+      return res
+        .status(401)
+        .json({ error: "Nom d'utilisateur ou mot de passe invalide" });
+    }
+
+    const token = jwt.sign(
+      { id: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+    console.log("Generated Token:", token);
+    res.json({ token });
+  } catch (error) {
+    console.error("Erreur lors de la connexion:", error);
+    res.status(500).json({ error: "Erreur interne du serveur" });
+  }
 });
 
 // Websocket & user gestion
