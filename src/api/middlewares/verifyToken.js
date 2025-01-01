@@ -4,8 +4,6 @@ import { AuthentificationError } from "../../utils/customErrors.js";
 const verifyToken = (req, res, next) => {
   const authorization = req.headers.authorization;
 
-  console.log("req.headers", req.headers);
-
   if (!authorization) {
     return next(new AuthentificationError("Missing authorization token"));
   }

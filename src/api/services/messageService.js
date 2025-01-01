@@ -1,3 +1,4 @@
+import { ServerError } from "../../utils/customErrors.js";
 import Message from "../models/Message.js";
 
 const messageServices = {
@@ -5,8 +6,8 @@ const messageServices = {
     const messages = await Message.find();
     return messages;
   },
-  showConversation: async (senderId, recipientId) => {
-    const messages = await Message.find({ senderId, recipientId });
+  showMessagesByUsers: async (senderId, recipientId) => {
+    const messages = await Message.find({ senderId, recipientId }).exec();
     return messages;
   },
 };

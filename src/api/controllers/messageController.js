@@ -5,10 +5,14 @@ const messageController = {
     const messages = await messageServices.show();
     res.status(200).json(messages);
   },
-  showConversation: async (req, res) => {
-    const { senderId, recipientId } = req.params;
+  showMessagesByUsers: async (req, res, next) => {
+    const { senderId, recipientId } = req.body;
 
-    const messages = await messageServices.showConversation(
+    if (!senderId || !recipientId) {
+      return next();
+    }
+
+    const messages = await messageServices.showMessagesByUsers(
       senderId,
       recipientId
     );

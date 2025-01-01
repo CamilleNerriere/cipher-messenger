@@ -6,7 +6,7 @@ const notFound = (req, res, next) => {
 };
 
 const errorHandler = async (err, req, res, next) => {
-  logger.error(err);
+  logger.error(err.stack);
 
   const statusCode = err.statusCode || 500;
 

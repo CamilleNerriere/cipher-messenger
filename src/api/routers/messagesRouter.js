@@ -9,7 +9,7 @@ messageRouter.get("/", verifyToken, catchServerError(messageController.show));
 messageRouter.get(
   "/conversation",
   verifyToken,
-  catchServerError(messageController.showConversation)
+  catchServerError(messageController.showMessagesByUsers)
 );
 
 export { messageRouter };
