@@ -1,7 +1,7 @@
 import logger from "../../../logger.js";
 import Message from "../../api/models/Message.js";
 import User from "../../api/models/User.js";
-import mongoose from "mongoose";
+import Conversation from "../../api/models/Conversation.js";
 import WebSocket from "ws";
 
 async function handleMessage(ws, message, authUsers) {
@@ -13,7 +13,33 @@ async function handleMessage(ws, message, authUsers) {
     logger.debug(`Message received from ${ws.user.id}: ${message}`);
 
     if (data.type === "message") {
-      const { recipientId, content } = data;
+      const { conversationId, recipientId, content } = data;
+
+      const validateObjectId = (id) => {
+        const regex = /^[a-fA-F0-9]{24}$/;
+        return regex.test(id);
+      };
+
+      if (!conversationId) {
+        logger.warn("Missing conversationId");
+        ws.send(
+          JSON.stringify({
+            type: "error",
+            message: "Please, select a conversation.",
+          })
+        );
+      }
+
+      if (!validateObjectId(conversationId)) {
+        logger.warn(`Invalid conversationId format: ${conversationId}`);
+        ws.send(
+          JSON.stringify({
+            type: "error",
+            message: "Error when sending the message.",
+          })
+        );
+        return;
+      }
 
       if (!recipientId || !content) {
         logger.warn(
@@ -22,16 +48,11 @@ async function handleMessage(ws, message, authUsers) {
         ws.send(
           JSON.stringify({
             type: "error",
-            message: "Missing recipientId or content.",
+            message: "Missing recipient or content.",
           })
         );
         return;
       }
-
-      const validateObjectId = (id) => {
-        const regex = /^[a-fA-F0-9]{24}$/;
-        return regex.test(id);
-      };
 
       if (!validateObjectId(recipientId)) {
         logger.warn(`Invalid recipientId format: ${recipientId}`);
@@ -53,15 +74,32 @@ async function handleMessage(ws, message, authUsers) {
         ws.send(
           JSON.stringify({
             type: "info",
-            message: "Error when sending the message.",
+            message: "Recipient not Found",
           })
         );
+      }
+
+      const conversation = await Conversation.findOne({
+        _id: conversationId,
+        members: { $all: [ws.user.id, recipientId] },
+      }).exec();
+
+      if (!conversation) {
+        logger.warn("Sender or recipient not part of the conversation");
+        ws.send(
+          JSON.stringify({
+            type: "error",
+            message: "You or the recipient are not part of the conversation.",
+          })
+        );
+        return;
       }
 
       const newMessage = await Message.create({
         senderId: ws.user.id,
         recipientId,
         content,
+        conversationId,
       });
 
       const recipientSocket = authUsers.get(recipientId);
@@ -82,7 +120,7 @@ async function handleMessage(ws, message, authUsers) {
           ws.send(
             JSON.stringify({
               type: "info",
-              message: `Message send to ${recipientId}`,
+              message: `Message delivered to ${recipientId}`,
             })
           );
         } catch (error) {
@@ -100,7 +138,7 @@ async function handleMessage(ws, message, authUsers) {
         ws.send(
           JSON.stringify({
             type: "error",
-            message: `User ${recipientId} not found or disconnected.`,
+            message: `Message send to ${recipientId}`,
           })
         );
       }

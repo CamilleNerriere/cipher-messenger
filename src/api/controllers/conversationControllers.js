@@ -1,4 +1,5 @@
 import conversationServices from "../services/conversationServices.js";
+import mongoose from "mongoose";
 
 const conversationController = {
   show: async (req, res) => {
@@ -8,8 +9,14 @@ const conversationController = {
   showConversation: async (req, res) => {
     const { members } = req.body;
 
-    if (!members) {
-      return next();
+    if (!Array.isArray(members) || members.length !== 2) {
+      return res.status(400).json({
+        error: "Invalid members format. Must be an array with 2 members.",
+      });
+    }
+
+    if (!members.every((id) => mongoose.Types.ObjectId.isValid(id))) {
+      return res.status(400).json({ error: "Invalid member IDs provided." });
     }
 
     const conversation = await conversationServices.showConversation(members);
