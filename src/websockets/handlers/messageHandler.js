@@ -3,6 +3,7 @@ import Message from "../../api/models/Message.js";
 import User from "../../api/models/User.js";
 import Conversation from "../../api/models/Conversation.js";
 import WebSocket from "ws";
+import processMessage from "../services/messageServices.js";
 
 async function handleMessage(ws, message, authUsers) {
   let errorCount = 0;
@@ -14,7 +15,7 @@ async function handleMessage(ws, message, authUsers) {
 
     if (data.type === "message") {
       const { conversationId, recipientId, content } = data;
-
+      // doit être déplacé dans service
       const validateObjectId = (id) => {
         const regex = /^[a-fA-F0-9]{24}$/;
         return regex.test(id);
@@ -64,7 +65,7 @@ async function handleMessage(ws, message, authUsers) {
         );
         return;
       }
-
+      // réécrit dans le userRepository
       const recipient = await User.findOne({
         _id: recipientId,
       }).exec();
@@ -78,7 +79,7 @@ async function handleMessage(ws, message, authUsers) {
           })
         );
       }
-
+      // réécrit dans conversation repository
       const conversation = await Conversation.findOne({
         _id: conversationId,
         members: { $all: [ws.user.id, recipientId] },
@@ -94,14 +95,14 @@ async function handleMessage(ws, message, authUsers) {
         );
         return;
       }
-
+      // réécrit dans message repository
       const newMessage = await Message.create({
         senderId: ws.user.id,
         recipientId,
         content,
         conversationId,
       });
-
+      // passer aussi à message services
       const recipientSocket = authUsers.get(recipientId);
       if (recipientSocket && recipientSocket.readyState === WebSocket.OPEN) {
         try {
@@ -113,7 +114,7 @@ async function handleMessage(ws, message, authUsers) {
               timeStamp: newMessage.timestamp,
             })
           );
-
+          // réécrit dans message Repository
           newMessage.delivered = true;
           await newMessage.save();
 
@@ -176,3 +177,61 @@ async function handleMessage(ws, message, authUsers) {
 }
 
 export default handleMessage;
+
+const handleMessageV2 = async (ws, message, authUsers) => {
+  let errorCount = 0;
+  const MAX_ERRORS = 3;
+
+  try {
+    const data = JSON.parse(message);
+    logger.debug(`Message received from ${ws.user.id}: ${message}`);
+
+    if (data.type === "message") {
+      const { conversationId, recipientId, content } = data;
+    }
+
+    const response = await processMessage(
+      ws.user.id,
+      conversationId,
+      recipientId,
+      content,
+      authUsers
+    );
+
+    ws.send(JSON.stringify(response));
+  } catch (error) {
+    if (error instanceof SyntaxError) {
+      logger.error("JSON Syntax Error :", error.message);
+      logger.warn(`JSON parsing error count for ${ws.user.id}: ${errorCount}`);
+      errorCount++;
+
+      if (errorCount >= MAX_ERRORS) {
+        logger.error("Too many consecutive errors. Connection closed");
+        ws.close(1008, "Too many JSON parsing errors");
+        return;
+      }
+
+      ws.send(
+        JSON.stringify({
+          type: "error",
+          message:
+            "Message received incorrectly formatted. Please send a valid JSON.",
+        })
+      );
+    } else {
+      logger.error("Unexpected Error:", {
+        message: error.message,
+        stack: error.stack,
+        errorName: error.name,
+        errorType: typeof error,
+      });
+
+      ws.send(
+        JSON.stringify({
+          type: "error",
+          message: error.message || "An unexpected error occurred.",
+        })
+      );
+    }
+  }
+};
