@@ -6,4 +6,10 @@ const findUserById = async (userId) => {
   }).exec();
 };
 
-export default findUserById;
+const findUserByUsername = async (username) => {
+  return await User.findOne({
+    username: username,
+  }).exec();
+};
+
+export { findUserById, findUserByUsername };

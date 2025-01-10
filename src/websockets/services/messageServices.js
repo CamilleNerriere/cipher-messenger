@@ -5,7 +5,10 @@ import {
   markAsDelivered,
 } from "../repositories/messagesRepository.js";
 import findConversation from "../repositories/conversationRepository.js";
-import findUserById from "../repositories/userRepository.js";
+import {
+  findUserByUsername,
+  findUserById,
+} from "../repositories/userRepository.js";
 
 const validateObjectId = (id) => {
   const regex = /^[a-fA-F0-9]{24}$/;
@@ -15,7 +18,7 @@ const validateObjectId = (id) => {
 const processMessage = async (
   senderId,
   conversationId,
-  recipientId,
+  recipientName,
   content,
   authUsers
 ) => {
@@ -24,20 +27,17 @@ const processMessage = async (
     return { type: "error", message: "Conversation not found" };
   }
 
-  if (!recipientId || !validateObjectId(recipientId)) {
-    logger.warn(`Invalid RecipientId : ${recipientId}`);
-    return { type: "error", message: "User not found" };
-  }
-
   if (!content) {
     logger.warn("No content send");
     return { type: "error", message: "Please, enter a message." };
   }
 
+  const recipient = await findUserByUsername(recipientName);
+
   const conversation = await findConversation(
     conversationId,
     senderId,
-    recipientId
+    recipient.id
   );
 
   if (!conversation) {
@@ -47,8 +47,6 @@ const processMessage = async (
     return { type: "error", message: "Conversation not found" };
   }
 
-  const recipient = await findUserById(recipientId);
-
   if (!recipient) {
     logger.warn(`Recipient ${recipientId} not found`);
     return { type: "error", message: "Recipient not found" };
@@ -56,26 +54,31 @@ const processMessage = async (
 
   const newMessage = await createMessage(
     senderId,
-    recipientId,
+    recipient.id,
     content,
     conversationId
   );
 
-  const recipientSocket = authUsers.get(recipientId);
+  const sender = await findUserById(senderId);
+
+  const recipientSocket = authUsers.get(recipient.id);
 
   if (recipientSocket && recipientSocket.readyState === WebSocket.OPEN) {
     recipientSocket.send(
       JSON.stringify({
         type: "message",
-        senderId,
+        sender: sender.username,
         content,
         timeStamp: newMessage.timeStamp,
       })
     );
     await markAsDelivered(newMessage);
-    return { type: "info", message: `Message delivered to ${recipientId}` };
+    return { type: "info", message: `Message delivered to ${recipientName}` };
   }
-  return { type: "info", message: `Message saved for offline ${recipientId}` };
+  return {
+    type: "info",
+    message: `Message saved for offline ${recipientName}`,
+  };
 };
 
 export default processMessage;
