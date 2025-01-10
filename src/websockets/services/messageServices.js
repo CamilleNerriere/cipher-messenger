@@ -7,13 +7,6 @@ import {
 import findConversation from "../repositories/conversationRepository.js";
 import findUserById from "../repositories/userRepository.js";
 
-// je dois valider s'il y a bien un id de conversation, un id de recipient et un contenu
-// je dois valider si l'id de la conversation et du recipient sont bien des id mongo
-// je dois vérifier s'il y a bien une conversation correspondant à l'id
-// je dois vérifier si le recipient existe
-// si tout est ok, je peux créer le message
-// je cherche dans les utilisateurs connectés si recipient est là
-
 const validateObjectId = (id) => {
   const regex = /^[a-fA-F0-9]{24}$/;
   return regex.test(id);

@@ -12,6 +12,8 @@ const authServices = {
     if (!user) {
       throw new ServerError("Invalid email or password");
     }
+
+    console.log("user", user);
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       throw new ServerError("Invalid email or password");
