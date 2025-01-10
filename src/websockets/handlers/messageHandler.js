@@ -9,11 +9,10 @@ const handleMessage = async (ws, message, authUsers) => {
     const data = JSON.parse(message);
     logger.debug(`Message received from ${ws.user.id}: ${message}`);
 
-    console.log("wsuser", ws.user);
-
-    const { conversationId, recipientName, content } = data;
+    const { type, conversationId, recipientName, content } = data;
 
     const response = await processMessage(
+      type,
       ws.user.id,
       conversationId,
       recipientName,

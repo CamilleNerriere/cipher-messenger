@@ -1,3 +1,4 @@
+import sanitizeHtml from "sanitize-html";
 import logger from "../../../logger.js";
 import WebSocket from "ws";
 import {
@@ -16,12 +17,22 @@ const validateObjectId = (id) => {
 };
 
 const processMessage = async (
+  type,
   senderId,
   conversationId,
   recipientName,
   content,
   authUsers
 ) => {
+  if (type !== "message") {
+    logger.warn("Invalid Type");
+    return { type: "error", message: "An error occured" };
+  }
+
+  if (!validateObjectId(senderId)) {
+    return { type: "error", message: "An error occured" };
+  }
+
   if (!conversationId || !validateObjectId(conversationId)) {
     logger.warn(`Invalid conversationId : ${conversationId}`);
     return { type: "error", message: "Conversation not found" };
@@ -32,7 +43,10 @@ const processMessage = async (
     return { type: "error", message: "Please, enter a message." };
   }
 
-  const recipient = await findUserByUsername(recipientName);
+  const sanitizedRecipientName = sanitizeHtml(recipientName);
+  const sanitizedContent = sanitizeHtml(content);
+
+  const recipient = await findUserByUsername(sanitizedRecipientName);
 
   const conversation = await findConversation(
     conversationId,
@@ -55,7 +69,7 @@ const processMessage = async (
   const newMessage = await createMessage(
     senderId,
     recipient.id,
-    content,
+    sanitizedContent,
     conversationId
   );
 
@@ -68,7 +82,7 @@ const processMessage = async (
       JSON.stringify({
         type: "message",
         sender: sender.username,
-        content,
+        sanitizedContent,
         timeStamp: newMessage.timeStamp,
       })
     );

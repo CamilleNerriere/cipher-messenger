@@ -1,5 +1,6 @@
 import conversationServices from "../services/conversationServices.js";
 import mongoose from "mongoose";
+import sanitizeAndValidate from "../../utils/sanitizeAndValidate.js";
 
 const conversationController = {
   show: async (req, res) => {
@@ -24,6 +25,15 @@ const conversationController = {
   },
   store: async (req, res, next) => {
     const { members, encryptionKey } = req.body;
+
+    const { error } = sanitizeAndValidate.conversation.validate({
+      members,
+      encryptionKey,
+    });
+
+    if (error) {
+      return next(error.details[0]);
+    }
 
     if (!members || !encryptionKey) {
       return next();
