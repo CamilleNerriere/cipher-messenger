@@ -6,12 +6,14 @@ import connectDB from "./src/api/data/db.js";
 import { errorHandler, notFound } from "./src/api/middlewares/errorHandlers.js";
 import { router } from "./src/api/routers/router.js";
 import setupWebSocket from "./src/websockets/index.js";
+import limiter from "./src/api/middlewares/limiter.js";
 
 dotenv.config();
 
 connectDB();
 
 const app = express();
+app.use(limiter);
 const server = http.createServer(app);
 
 const wss = setupWebSocket(server);
