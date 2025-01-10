@@ -1,4 +1,5 @@
 import sanitizeHtml from "sanitize-html";
+import { cipher } from "../../../cipher.js";
 import logger from "../../../logger.js";
 import WebSocket from "ws";
 import {
@@ -44,7 +45,6 @@ const processMessage = async (
   }
 
   const sanitizedRecipientName = sanitizeHtml(recipientName);
-  const sanitizedContent = sanitizeHtml(content);
 
   const recipient = await findUserByUsername(sanitizedRecipientName);
 
@@ -66,10 +66,14 @@ const processMessage = async (
     return { type: "error", message: "Recipient not found" };
   }
 
+  const sanitizedContent = sanitizeHtml(content);
+  const key = conversation.encryptionKey;
+  const encryptedContent = cipher(sanitizedContent, key);
+
   const newMessage = await createMessage(
     senderId,
     recipient.id,
-    sanitizedContent,
+    encryptedContent,
     conversationId
   );
 
@@ -82,7 +86,7 @@ const processMessage = async (
       JSON.stringify({
         type: "message",
         sender: sender.username,
-        sanitizedContent,
+        content: encryptedContent,
         timeStamp: newMessage.timeStamp,
       })
     );

@@ -49,4 +49,4 @@ const decipher = (message, key) => {
   return decipheredMessage;
 };
 
-console.log(decipher("frxfrx", 3));
+export { cipher, decipher };
