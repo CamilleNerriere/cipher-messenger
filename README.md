@@ -1,69 +1,172 @@
-Procédure pour activer l'authentification : 
+A small project in order to learn Websocket and Ws and play with a small Ceasar Cipher. 
 
-* Créer d'abord le service sans authentification dans le docker-compose 
+------
 
-ex : 
+# Procedure to Enable Authentication
 
-version: '3.8'
-services:
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-    command: ["mongod"]  # Démarrer sans authentification
+1. **First, create the service without authentication in the `docker-compose` file:**
 
-volumes:
-  mongo-data:
+   ```yaml
+   version: '3.8'
+   services:
+     mongodb:
+       image: mongo:latest
+       container_name: mongodb
+       ports:
+         - "27017:27017"
+       volumes:
+         - mongo-data:/data/db
+       command: ["mongod"]  # Start without authentication
 
-     
-* puis lancer les containers : 
+   volumes:
+     mongo-data:
+   ```
 
-docker-compose up -d
+2. **Then start the containers:**
 
-* et entrer : 
+   ```bash
+   docker-compose up -d
+   ```
 
-docker exec -it nom-du-container mongo
+3. **Access the container:**
 
-* Créer une base de données : 
+   ```bash
+   docker exec -it container-name mongo
+   ```
 
-ex : 
+4. **Create a database:**
 
-use nouvelle-base-de-données;  
+   Example:
+   ```javascript
+   use new-database;
 
-db.createUser({
-  user: "dbUser",
-  pwd: "dbPassword",  
-  roles: [{ role: "readWrite", db: "nouvelle-base-de-données" }]
-});
+   db.createUser({
+     user: "dbUser",
+     pwd: "dbPassword",
+     roles: [{ role: "readWrite", db: "new-database" }]
+   });
+   ```
 
-* exit
+5. **Exit the Mongo shell:**
 
-* on modifie le docker compose de manière à ajouter l'authentification 
+   ```bash
+   exit
+   ```
 
-version: '3.8'
-services:
-  mongodb:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo-data:/data/db
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=dbUser 
-      - MONGO_INITDB_ROOT_PASSWORD=dbPassword  
-    command: ["mongod", "--auth"]  # Démarrer avec authentification activée
+6. **Modify the `docker-compose` file to enable authentication:**
 
-volumes:
-  mongo-data:
+   ```yaml
+   version: '3.8'
+   services:
+     mongodb:
+       image: mongo:latest
+       ports:
+         - "27017:27017"
+       volumes:
+         - mongo-data:/data/db
+       environment:
+         - MONGO_INITDB_ROOT_USERNAME=dbUser
+         - MONGO_INITDB_ROOT_PASSWORD=dbPassword
+       command: ["mongod", "--auth"]  # Start with authentication enabled
 
-et on passe à l'image node l'URI suivante : 
+   volumes:
+     mongo-data:
+   ```
 
-MONGO_URI=mongodb://dbUser:dbPassword@mongodb:27017/nouvelle-base-de-données?authSource=nouvelle-base-de-données
+7. **Pass the following URI to the Node.js application:**
+
+   ```plaintext
+   MONGO_URI=mongodb://dbUser:dbPassword@mongodb:27017/new-database?authSource=new-database
+   ```
+
+8. **Rebuild and start the containers:**
+
+   ```bash
+   docker-compose up
+   ```
+
+   ---------
 
 
-* on refait : 
+# Procédure pour activer l'authentification
 
-docker compose up 
+1. **Créer d'abord le service sans authentification dans le fichier `docker-compose` :**
+
+   ```yaml
+   version: '3.8'
+   services:
+     mongodb:
+       image: mongo:latest
+       container_name: mongodb
+       ports:
+         - "27017:27017"
+       volumes:
+         - mongo-data:/data/db
+       command: ["mongod"]  # Démarrer sans authentification
+
+   volumes:
+     mongo-data:
+   ```
+
+2. **Lancer les containers :**
+
+   ```bash
+   docker-compose up -d
+   ```
+
+3. **Accéder au container :**
+
+   ```bash
+   docker exec -it nom-du-container mongo
+   ```
+
+4. **Créer une base de données :**
+
+   Exemple :
+   ```javascript
+   use nouvelle-base-de-données;
+
+   db.createUser({
+     user: "dbUser",
+     pwd: "dbPassword",
+     roles: [{ role: "readWrite", db: "nouvelle-base-de-données" }]
+   });
+   ```
+
+5. **Quitter le shell Mongo :**
+
+   ```bash
+   exit
+   ```
+
+6. **Modifier le fichier `docker-compose` pour activer l'authentification :**
+
+   ```yaml
+   version: '3.8'
+   services:
+     mongodb:
+       image: mongo:latest
+       ports:
+         - "27017:27017"
+       volumes:
+         - mongo-data:/data/db
+       environment:
+         - MONGO_INITDB_ROOT_USERNAME=dbUser
+         - MONGO_INITDB_ROOT_PASSWORD=dbPassword
+       command: ["mongod", "--auth"]  # Démarrer avec authentification activée
+
+   volumes:
+     mongo-data:
+   ```
+
+7. **Passer l'URI suivant à l'application Node.js :**
+
+   ```plaintext
+   MONGO_URI=mongodb://dbUser:dbPassword@mongodb:27017/nouvelle-base-de-données?authSource=nouvelle-base-de-données
+   ```
+
+8. **Rebuild et démarrer les containers :**
+
+   ```bash
+   docker-compose up
+   ```
