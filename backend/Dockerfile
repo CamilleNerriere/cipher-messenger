@@ -1,8 +1,7 @@
 FROM node:lts-alpine3.20
 WORKDIR /usr/src/app
-RUN corepack enable
-COPY package*.json ./
-COPY pnpm-lock.yaml ./
+RUN npm install -g pnpm
+COPY ../package.json ../pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY . .
 EXPOSE 3000

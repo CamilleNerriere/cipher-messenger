@@ -5,5 +5,4 @@ tmp
 README.md 
 Dockerfile
 docker-compose.yml
-.env
 TODO.md

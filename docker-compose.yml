@@ -2,11 +2,11 @@ version: '3.8'
 
 services:
   app:
-    build: .
+    build: ./backend
     ports:
       - "3000:3000"
-    # environment:
-      # - MONGO_URI=${MONGO_URI}
+    environment:
+      - MONGO_URI=${MONGO_URI}
     volumes:
       - ./:/usr/src/app
       - /usr/src/app/node_modules
@@ -31,6 +31,7 @@ services:
       retries: 5
       start_period: 40s
     command: ["mongod", "--auth"]
+
 
 volumes:
   mongo-data:

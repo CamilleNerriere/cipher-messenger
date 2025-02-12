@@ -6,19 +6,20 @@
   "type": "module",
   "scripts": {
     "test": "mocha --timeout 8000",
-    "dev": "nodemon server.js"
+    "dev": "nodemon ./backend/app.js"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.13",
     "mongoose": "^8.9.2",
     "nodemon": "^3.1.9",
     "sanitize-html": "^2.14.0",
