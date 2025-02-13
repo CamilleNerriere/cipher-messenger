@@ -6,5 +6,6 @@ node_modules
 .idea/
 .vscode/
 test.js
-mongo.init.js
+init-mongo.js
 TODO.md
+READMEOLD.md
