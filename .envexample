@@ -1,0 +1,7 @@
+
+MONGO_INITDB_ROOT_USERNAME=cipherUser
+MONGO_INITDB_ROOT_PASSWORD=securePassword
+MONGO_URI=mongodb://cipherUser:securePassword@mongodb:27017/ciphermessenger?authSource=ciphermessenger
+DEV_USER=devuser
+DEV_PASSWORD=devpassword
+REACT_URL=

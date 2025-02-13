@@ -12,6 +12,8 @@ import logger from './logger.js';
 dotenv.config();
 connectDB();
 
+console.log('test', process.env.PORT);
+
 const app = express();
 app.use(limiter);
 const server = http.createServer(app);

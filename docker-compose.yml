@@ -1,18 +1,67 @@
-version: '3.8'
+# version: '3.8'
+
+# services:
+#   app:
+#     build: ./backend
+#     ports:
+#       - "3000:3000"
+#     environment:
+#       - MONGO_URI=${MONGO_URI}
+#     volumes:
+#       - ./:/usr/src/app
+#       - /usr/src/app/node_modules
+#     depends_on:
+#       mongodb:
+#         condition: service_healthy
+
+#   mongodb:
+#     image: mongo:6-jammy
+#     ports:
+#       - "27017:27017"
+#     volumes:
+#       - ./init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+#       - mongo-data:/data/db
+#     environment:
+#       - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+#       - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+#     healthcheck:
+#       test: ["CMD", "echo", "ping"]
+#       interval: 10s
+#       timeout: 5s
+#       retries: 5
+#       start_period: 40s
+#     command: ["mongod", "--auth"]
+
+
+# volumes:
+#   mongo-data:
+
+
 
 services:
-  app:
+  backend:
     build: ./backend
     ports:
       - "3000:3000"
     environment:
       - MONGO_URI=${MONGO_URI}
     volumes:
-      - ./:/usr/src/app
+      - ./backend:/usr/src/app
       - /usr/src/app/node_modules
     depends_on:
       mongodb:
         condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/usr/src/app
+      - /usr/src/app/node_modules
+    environment:
+      # Ajout de cette variable pour s'assurer que Vite écoute sur toutes les interfaces
+      - HOST=0.0.0.0
 
   mongodb:
     image: mongo:6-jammy
@@ -31,7 +80,6 @@ services:
       retries: 5
       start_period: 40s
     command: ["mongod", "--auth"]
-
 
 volumes:
   mongo-data:
