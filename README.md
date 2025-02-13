@@ -1,4 +1,4 @@
-A small project in order to learn Websocket and Ws and play with a small Ceasar Cipher. 
+A small project in order to learn Websocket and Ws and play with a small Ceasar Cipher. Front is still in development
 
 ------
 
