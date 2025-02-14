@@ -1,0 +1,43 @@
+@use "../../styles/variables" as v;
+
+.sign-in{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  &__form{
+
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; 
+    padding: 2rem 0;
+    
+    &__inputs{
+      
+      display: flex;
+      flex-direction: column;
+      gap: v.$gutter *2 ;
+      margin-bottom: v.$gutter * 4;
+
+      input{
+        background-color: v.$body;
+        border: v.$main solid 2px;
+        height: 2.5em;
+        border-radius: 2.5em;
+        text-align: center;
+        width: 18em;
+      }
+    }
+
+    button {
+      width:10em;;
+      height: 2.5em;
+      background-color: v.$body;
+      border: solid v.$main 2px;
+      border-radius: 0.5em;
+      font-weight: 600;
+    }
+  }
+}

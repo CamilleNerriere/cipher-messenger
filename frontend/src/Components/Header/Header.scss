@@ -1,0 +1,32 @@
+@use "../../styles/variables" as v;
+
+.header{
+
+  height: 15%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-bottom: 2px solid v.$main;
+
+  &__default{
+    display: flex;
+    align-items: center;
+    font-family: GravityFalls;
+    letter-spacing: 0.2em;
+        text-align: center;
+        color: v.$body;
+        -webkit-text-stroke: 2px v.$main;
+
+
+    &__icon{
+      width: 20%;
+      color: v.$main;
+    }
+
+    &__text{
+      width: 60%;
+      text-align: center;
+      font-size: 1.5em;
+    }
+  }
+}
