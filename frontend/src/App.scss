@@ -1,0 +1,9 @@
+@use "./styles/variables" as v;
+
+.app-container{
+  border: solid black 1px;
+  width: v.$gutter * 30;
+  height: v.$gutter * 45;
+  align-self: center;
+
+}

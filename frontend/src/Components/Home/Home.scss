@@ -1,0 +1,90 @@
+@use "../../styles/variables" as v;
+.home{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+    padding: v.$gutter * 2;
+
+    &__h1{
+        font-family: GravityFalls;
+        letter-spacing: 0.2em;
+        text-align: center;
+        color: v.$body;
+        -webkit-text-stroke: 1px v.$main;
+    }
+
+    &__bill{
+        width: 100%;
+        display: block;
+        margin: auto;
+    }
+
+    &__buttons{
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1em;
+
+        button{
+            width:10em;;
+            height: 2.5em;
+            background-color: v.$body;
+            border: solid v.$main 1px;
+            border-radius: v.$gutter * 0.5;
+        }
+    }
+}
+
+.connect{
+
+    height: 100%;
+    padding: v.$gutter * 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    &__container{
+        position: relative;
+        
+    }
+
+    &__bill{
+        width: 100%;
+        display: block;
+        margin: auto;
+    }
+
+    form{
+        display: flex;
+        flex-direction: column;
+        gap: v.$gutter;
+        width: 10em;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    input{
+        background-color: v.$body;
+        border: v.$main solid 1px;
+        height: 2.5em;
+        border-radius: 2.5em;
+        text-align: center;
+    }
+
+    &__button{
+        padding-bottom: v.$gutter * 3;
+        display: flex;
+        justify-content: center;
+    }
+
+    button{
+        width:10em;;
+        height: 2.5em;
+        background-color: v.$body;
+        border: solid v.$main 1px;
+        border-radius: 0.5em;
+    }
+}
