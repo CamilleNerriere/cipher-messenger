@@ -1,0 +1,21 @@
+@use "../../styles/variables" as v;
+
+.conversation-list{
+  height: 100%;
+
+  &__add{
+    text-align: center;
+    margin-top: v.$gutter *2;
+    
+  }
+
+  &__icon{
+    width: 20%;
+    color: v.$main;
+  }
+
+  &__list{
+    border-top: 1px solid v.$soft;
+    margin: v.$gutter*2;
+  }
+}
