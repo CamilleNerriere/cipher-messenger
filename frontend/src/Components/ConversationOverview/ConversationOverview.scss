@@ -1,12 +1,21 @@
 @use "../../styles/variables" as v;
 
 .conversation-overview{
-  display: flex;
   gap: v.$gutter * 0.5;
-  justify-content: space-between;
+  background-color: #fffdfd93;;
+
+  &__extract{
+    display: flex;
+    justify-content: space-between;
+  }
   
   &__username, &__date{
     width: 15%;
+  }
+
+  &__username{
+    font-weight: 600;
+    margin-bottom: v.$gutter * 0.5;
   }
 
   &__message{

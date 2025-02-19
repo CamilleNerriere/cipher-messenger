@@ -9,7 +9,7 @@ function SignIn() {
     <meta name="description" content="Bienvenue sur Cipher Messenger, et envoyez vos messages secrets." />
     <Header
       text="S'inscrire"
-      showSearchBar={false}/>
+    />
       <form className="sign-in__form">
         <div className="sign-in__form__inputs">
           <input type="text" placeholder="Nom d'utilisateur"/>

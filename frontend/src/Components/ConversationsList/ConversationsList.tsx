@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Header from '../Header/Header';
+import SearchBar from '../SearchBar/SearchBar.tsx';
 import ConversationOverview from '../ConversationOverview/ConversationOverview.tsx'
 import { IConversationOverviewProps } from '../../Interfaces/IConversationOverview.tsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -28,12 +29,14 @@ function ConversationList(){
 
   return (
     <div className='conversation-list'>
+      <title>Conversations | Cipher Messenger</title>
+      <meta name="description" content="Bienvenue sur Cipher Messenger, et envoyez vos messages secrets." />
       <Header
       text="Conversations"
-      showSearchBar={false}
       />
-      <div className='conversation-list__add'>
-        <FontAwesomeIcon icon={faPlus}/>
+      <div style={{position: "relative"}} className='conversation-list__search'>
+        <SearchBar/>
+        <FontAwesomeIcon className='conversation-list__icon' icon={faPlus}/>
       </div>
       <div className='conversation-list__list'>
         {conversationsList.map(conversation => (

@@ -1,11 +1,10 @@
 import './Header.scss';
-import SearchBar from '../SearchBar/SearchBar.tsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft } from '@fortawesome/free-solid-svg-icons';
 
 
 
-function Header({ text, showSearchBar }: { text: string; showSearchBar: boolean }) {
+function Header({ text }: { text: string; }) {
     
   return(
       <div className="header">
@@ -15,9 +14,7 @@ function Header({ text, showSearchBar }: { text: string; showSearchBar: boolean 
             {text}
           </div>
         </div>
-        <div className="header__search">
-          {showSearchBar && <SearchBar/>}
-        </div>
+      
       </div>
   )
 }

@@ -3,10 +3,11 @@
 .conversation-list{
   height: 100%;
 
-  &__add{
-    text-align: center;
+  &__search{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-top: v.$gutter *2;
-    
   }
 
   &__icon{
@@ -15,7 +16,6 @@
   }
 
   &__list{
-    border-top: 1px solid v.$soft;
     margin: v.$gutter*2;
   }
 }

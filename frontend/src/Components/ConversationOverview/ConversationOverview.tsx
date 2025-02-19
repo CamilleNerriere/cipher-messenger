@@ -9,8 +9,10 @@ function ConversationOverview ({username, message, date} : IConversationOverview
   return (
     <div className='conversation-overview'>
       <div className='conversation-overview__username'>{username}</div>
-      <div className='conversation-overview__message'>{message}</div>
-      <div className='conversation-overview__date'>{formattedDate}</div>
+      <div className='conversation-overview__extract'>
+        <div className='conversation-overview__message'>{message}</div>
+        <div className='conversation-overview__date'>{formattedDate}</div>
+      </div>
     </div>
   )
 }

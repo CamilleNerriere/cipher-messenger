@@ -1,0 +1,38 @@
+@use "../../styles/variables" as v;
+
+.search {
+
+  input{
+    background-color: v.$input;
+    border: v.$main solid 2px;
+    height: 2.5em;
+    border-radius: 2.5em;
+    text-align: center;
+    width: 18em;
+  }
+
+  &__results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: v.$input;
+    z-index: 1000;
+    max-height: 200px;
+    overflow-y: auto;
+
+    
+    li { 
+      cursor: pointer;
+      padding: v.$gutter;
+      
+      &:hover, &.selected  {
+        background-color: #f0f0f0;
+      }
+
+      &.selected {
+        background-color: #e0e0e0;
+      }
+    }
+  }
+}
