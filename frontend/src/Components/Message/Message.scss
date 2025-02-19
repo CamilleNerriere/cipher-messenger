@@ -1,0 +1,35 @@
+
+@use "../../styles/variables" as v;
+
+.message {
+    display: flex;
+
+    &__sender {
+        background-color: v.$soft;
+        align-self: flex-end;
+        width: fit-content;
+        max-width: 60%;
+        padding: v.$gutter;;
+        border-radius: 12px;
+        border: solid 1px v.$main;
+    }
+
+    &__recipient {
+        align-self: flex-start; 
+        width: fit-content;
+        max-width: 60%;
+        padding: v.$gutter;;
+        border-radius: 12px;
+        border: solid 1px v.$main;
+    }
+
+    &__date {
+        font-size: 0.8em;
+        color: v.$grey;
+        margin-bottom: 4px;
+    }
+
+    &__text {
+        font-size: 1em;
+    }
+}
